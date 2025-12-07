@@ -4,6 +4,7 @@ const dbConn = require("./config/database");
 const app = express();
 var cookieParser = require("cookie-parser");
 const cors = require("cors");
+require("./utils/cronjob");
 dotenv.config();
 
 const corsOptions = {
