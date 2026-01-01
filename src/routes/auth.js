@@ -36,6 +36,8 @@ authRouter.post("/login", async (req, res) => {
     const { emailId, password } = req.body;
     const user = await User.findOne({ emailId: emailId }).select("+password");
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     if (!user) {
       throw new Error("Invalid credentials!!");
     }
@@ -44,7 +46,12 @@ authRouter.post("/login", async (req, res) => {
       throw new Error("Invalid Credentials!");
     }
     const token = await user.getJWT();
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
+      expires: new Date(Date.now() + 8 * 3600000), // 8 hours
+    });
 
     return res.status(200).json({ message: "Login successful", user });
   } catch (err) {
