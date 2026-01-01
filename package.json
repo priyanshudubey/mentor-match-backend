@@ -2,10 +2,11 @@
   "name": "devtiner-backend",
   "version": "1.0.0",
   "description": "developers tinder",
-  "main": "index.js",
+  "main": "api/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon api/index.js",
+    "build": "echo \"No build step required for backend\""
   },
   "author": "Priyanshu Dubey",
   "license": "ISC",
