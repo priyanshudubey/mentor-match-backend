@@ -58,6 +58,7 @@ paymentRouter.post("/payment/webhook", async (req, res) => {
 
     const payment = await Payment.findOne({ orderId: paymentDetails.order_id });
     payment.status = paymentDetails.status;
+    payment.paymentId = paymentDetails.id;
     await payment.save();
 
     const user = await User.findOne({ _id: payment.userId });

@@ -8,7 +8,12 @@ const bcrypt = require("bcrypt");
 //Get profile api
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
-    res.send(req.user);
+    const user = req.user.toObject ? req.user.toObject() : req.user;
+    // Ensure firstName always exists
+    if (!user.firstName) {
+      user.firstName = "User";
+    }
+    res.send(user);
   } catch (err) {
     res.status(400).send("Error occured " + err.message);
   }

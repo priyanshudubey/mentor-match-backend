@@ -1,50 +1,25 @@
-const { SendEmailCommand } = require("@aws-sdk/client-ses");
-const { sesClient } = require("./sesClient");
-const { create } = require("../models/user");
+const { Resend } = require("resend");
 
-const createSendEmailCommand = (toAddress, fromAddress, subject, body) => {
-  return new SendEmailCommand({
-    Destination: {
-      CcAddresses: [],
-      ToAddresses: [toAddress],
-    },
-    Message: {
-      Body: {
-        Html: {
-          Charset: "UTF-8",
-          Data: body,
-        },
-        Text: {
-          Charset: "UTF-8",
-          Data: body,
-        },
-      },
-      Subject: {
-        Charset: "UTF-8",
-        Data: subject,
-      },
-    },
-    Source: fromAddress,
-    ReplyToAddresses: [],
-  });
-};
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const run = async (toAddress, subject, body) => {
-  const emailCommand = createSendEmailCommand(
-    "priyanshu0dubey@gmail.com",
-    "priyanshu@develevator.me",
-    subject,
-    body
-  );
   try {
-    return await sesClient.send(emailCommand);
-  } catch (error) {
-    if (error instanceof Error && error.name === "MessageRejected") {
-      const MessageRejectedError = new Error(
-        "Email address is not verified. Please verify the email address and try again."
-      );
-      return MessageRejectedError;
+    const { data, error } = await resend.emails.send({
+      from: "Mentor Match <onboarding@resend.dev>", // Replace with your verified domain
+      to: [toAddress],
+      subject: subject,
+      html: body,
+    });
+
+    if (error) {
+      console.error("Resend email error:", error);
+      throw new Error(`Failed to send email: ${error.message}`);
     }
+
+    console.log("Email sent successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Email sending failed:", error);
     throw error;
   }
 };

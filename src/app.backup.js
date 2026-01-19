@@ -28,12 +28,14 @@ const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/requests");
 const userRouter = require("./routes/user");
 const paymentRouter = require("./routes/payment");
+const postRouter = require("./routes/post");
 
 app.use("/api", authRouter);
 app.use("/api", profileRouter);
 app.use("/api", requestRouter);
 app.use("/api", userRouter);
 app.use("/api", paymentRouter);
+app.use("/api", postRouter);
 
 app.get("/", (req, res) => {
   res.json("Hello");
